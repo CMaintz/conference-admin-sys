@@ -31,3 +31,5 @@ bin/
 
 ### Project ###
 PROJECT_DESCRIPTION.md
+### Maven ###
+target/
