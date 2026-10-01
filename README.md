@@ -1,6 +1,6 @@
 # KAS: Conference Administration System
 
-A JavaFX desktop app for managing conference bookings. I built it as an exam project in Java, and it was graded 10 (the Danish scale tops out at 12).
+A JavaFX desktop app for managing conference bookings, built as an exam project and graded 10 (the Danish scale tops out at 12).
 
 ## What it does
 
