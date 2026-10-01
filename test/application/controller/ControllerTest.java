@@ -221,4 +221,45 @@ class ControllerTest {
 
         assertEquals(1, Controller.getParticipants().size());
     }
+
+    @Test
+    void updatingExcursionAddressLeavesConferenceAlone() {
+        Conference c = Controller.createConference("Conf", "Odense", 100, START, END);
+        Excursion e = Controller.createExcursion("Museum", "Kolding", c, START, 200);
+        assertEquals("Kolding", e.getAddress());
+
+        Controller.updateExcursion(e, "Castle", "Egeskov", END, 75);
+
+        assertEquals("Egeskov", e.getAddress());
+        assertEquals("Odense", c.getAddress());
+    }
+
+    @Test
+    void deletingParticipantRemovesThemFromHotelGuests() {
+        Conference c = Controller.createConference("Conf", "x", 100, START, END);
+        Hotel h = Controller.createHotel(c, "Svanen", "Odense", "123", 500, 700);
+        AddonPurchase wifi = Controller.createHotelAddon(h, "WiFi", 50);
+        Participant p = Controller.createParticipant("Finn", "1", "a");
+        ConferenceBooking b = Controller.createBooking(c, p, false, null, h, RoomType.SINGLE, START, END);
+        Controller.addAddonToBooking(b, wifi);
+
+        Controller.deleteParticipant(p);
+
+        assertTrue(h.getBookings().isEmpty());
+        assertTrue(h.getGuests().isEmpty());
+        assertFalse(h.addonBooked(wifi));
+    }
+
+    @Test
+    void excursionsWithoutCompanionAreIgnored() {
+        Conference c = Controller.createConference("Conf", "x", 100, START, END);
+        Excursion e = Controller.createExcursion("Museum", "Kolding", c, START, 200);
+        ConferenceBooking b = Controller.createBooking(c, Controller.createParticipant("Finn", "1", "a"),
+                false, null, null, null, START, END);
+
+        Controller.setExcursionsOrdered(b, new ArrayList<>(List.of(e)));
+
+        assertEquals(300, b.getTotalPrice());
+        assertTrue(e.getParticipatingCompanions().isEmpty());
+    }
 }

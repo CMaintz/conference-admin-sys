@@ -88,4 +88,24 @@ class AddonRuleTest {
         booking.setAddonsOrdered(null);
         assertEquals(List.of(breakfast), booking.getAddonsOrdered());
     }
+
+    @Test
+    void addonBookedOnAnEarlierBookingIsReported() {
+        AddonPurchase wifi = hotel.createAddonPurchase("WiFi", 50);
+        book("a").addAddon(wifi);
+        book("b");
+
+        assertTrue(hotel.addonBooked(wifi));
+    }
+
+    @Test
+    void addingAddonToBookingWithoutHotelIsIgnored() {
+        AddonPurchase wifi = hotel.createAddonPurchase("WiFi", 50);
+        ConferenceBooking booking = new Participant("a", "1", "a")
+                .createConfBook(conference, false, null, null, null, ARRIVAL, DEPARTURE);
+
+        booking.addAddon(wifi);
+
+        assertTrue(booking.getAddonsOrdered().isEmpty());
+    }
 }
