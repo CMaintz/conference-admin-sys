@@ -1,83 +1,73 @@
-# KAS — Conference Administration System
+# KAS: Conference Administration System
 
-A desktop application for managing conference bookings, built in Java with a JavaFX graphical user interface.
+A JavaFX desktop app for managing conference bookings, built as an exam project and graded 10 (the Danish scale tops out at 12).
 
-## Overview
+## What it does
 
-KAS allows administrators to manage all aspects of a conference: participants, hotels, excursions, and bookings — including pricing, companions, hotel add-ons, and lecturer status.
+KAS is for the person running a conference: participants, hotels, excursions and bookings, including pricing, companions, hotel add-ons and lecturer status.
 
-## Features
-
-- **Conference management** — Create, update, and delete conferences with date ranges and daily pricing
-- **Participant management** — Register participants with optional company affiliation; supports lecturer status (lecturers are exempt from the conference fee)
-- **Hotel management** — Associate hotels with conferences, set single/double room prices, and manage optional add-on services (e.g. WiFi, breakfast)
-- **Excursion management** — Define optional excursions per conference with individual pricing; booked through a participant's companion
-- **Booking system** — Full conference bookings linking participant, hotel, room type, companion, excursions, and add-ons, with automatic total price calculation
-- **Companion registration** — Each participant can have a companion who can be assigned to excursions
-- **Search** — Search across bookings
-- **Sorting** — Bookings sorted alphabetically by participant name (selection sort)
-- **CRUD via GUI** — All entities support create, update, and delete through modal dialog windows with input validation
+- Create, edit and delete conferences, each with a date range and a daily price.
+- Register participants, optionally with a company. A participant can be booked as a lecturer, which waives the conference fee.
+- Attach hotels to a conference with single and double room prices, plus optional add-ons like WiFi or breakfast.
+- Set up excursions per conference with their own prices. Excursions are booked for the participant's companion.
+- Make a booking that ties together participant, hotel, room type, companion, excursions and add-ons, and get the total price calculated.
+- Search for a participant by name and see their bookings.
+- Bookings are listed alphabetically by participant name, sorted with a hand-written selection sort.
+- Data is entered and edited through modal dialogs with input validation.
 
 ## Architecture
 
-The project follows a layered **MVC (Model-View-Controller)** architecture:
+It's a layered design: GUI on top, a controller layer in the middle, and the domain model with in-memory storage underneath.
 
 ```
 src/
 ├── application/
 │   ├── model/          # Domain model (Conference, Hotel, Participant, etc.)
-│   └── controller/     # Business logic layer (Controller.java)
-├── gui/                # JavaFX views and windows
+│   └── controller/     # Business logic (Controller.java)
+├── gui/                # JavaFX panes and windows
 └── storage/            # Static in-memory storage (Storage.java)
 ```
 
-### Domain Model
+### Domain model
 
 | Class | Description |
 |---|---|
-| `Conference` | A conference with hotels, excursions, bookings, and daily price |
-| `ConferenceBooking` | A booking tying a participant to a conference, with hotel, companion, and excursions |
-| `Hotel` | Accommodation associated with a conference, with room pricing and add-ons |
-| `Participant` | A person attending a conference, optionally affiliated with a company |
-| `Companion` | A companion of a participant who can be booked onto excursions |
-| `Excursion` | An optional trip linked to a specific conference |
+| `Conference` | A conference with hotels, excursions, bookings and a daily price |
+| `ConferenceBooking` | Ties a participant to a conference, with hotel, companion and excursions |
+| `Hotel` | Accommodation for a conference, with room prices and add-ons |
+| `Participant` | A person attending, optionally with a company |
+| `Companion` | A participant's companion, who can be booked onto excursions |
+| `Excursion` | An optional trip belonging to one conference |
 | `AddonPurchase` | An optional hotel service (e.g. WiFi, massage) |
 | `RoomType` | Enum: `SINGLE` or `DOUBLE` |
 
-### Pricing Logic
+### Pricing
 
-The total booking price is calculated as:
+A booking's total is:
 
 ```
-Total = Conference price (days × daily rate, waived for lecturers)
-      + Hotel price (room type × nights + add-ons)
-      + Excursion price (sum of booked excursions via companion)
+Total = conference fee  (daily rate × days, both arrival and departure day count; waived for lecturers)
+      + hotel           ((room rate + add-ons) × nights)
+      + excursions      (sum of the companion's excursions)
 ```
 
-## Tech Stack
+## Tech stack
 
-- **Java** — Core application language
-- **JavaFX** — Desktop GUI framework (scenes, stages, layouts, controls)
-- **IntelliJ IDEA** — IDE (`.iml` project file)
-- **Java Time API** (`java.time.LocalDate`) — Date handling
+- Java with JavaFX for the GUI
+- `java.time.LocalDate` for dates
+- An IntelliJ IDEA project (`KAS.iml`)
 
-## Getting Started
+## Running it
 
-### Prerequisites
+You'll need Java 17 or later, the JavaFX SDK (unless your JDK bundles it) and ideally IntelliJ IDEA.
 
-- Java 11 or later
-- JavaFX SDK (if not bundled with your JDK)
-- IntelliJ IDEA (recommended)
+1. Open the project in IntelliJ.
+2. Set up the JavaFX SDK in the project settings if needed.
+3. Run `src/gui/App.java`. It loads sample data and opens the GUI.
 
-### Running the Application
+Storage is in-memory only, so everything resets each run. The sample participants, conferences, hotels and bookings come from `App.initStorage()`.
 
-1. Open the project in IntelliJ IDEA
-2. Configure the JavaFX SDK in project settings if needed
-3. Run `src/gui/App.java` — this initialises sample data and launches the GUI
-
-> **Note:** The application uses in-memory storage only. All data is reset on each run. Sample data (participants, conferences, hotels, bookings) is pre-loaded via `App.initStorage()`.
-
-## Project Structure
+## Project structure
 
 ```
 KAS/
@@ -120,3 +110,5 @@ KAS/
 │       └── Storage.java
 └── KAS.iml
 ```
+
+The controller logic all lives in `Controller.java`; the other controller classes are empty placeholders.
