@@ -33,6 +33,9 @@ public class Participant {
     public void removeAllBookings() {
         for (ConferenceBooking booking : bookings) {
             booking.getConference().removeBooking(booking);
+            if (booking.getHotel() != null) {
+                booking.getHotel().removeBooking(booking);
+            }
         }
         this.bookings.clear();
     }

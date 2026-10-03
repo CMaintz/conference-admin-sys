@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Excursion {
-    private final String location;
+    private String location;
     private final Conference conference;
     private final ArrayList<Companion> participatingCompanions = new ArrayList<>();
     private String name;
@@ -60,11 +60,11 @@ public class Excursion {
     }
 
     public String getAddress() {
-        return conference.getAddress();
+        return location;
     }
 
     public void setAddress(String address) {
-        this.conference.setAddress(address);
+        this.location = address;
     }
 
     public LocalDate getDate() {

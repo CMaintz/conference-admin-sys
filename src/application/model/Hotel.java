@@ -30,6 +30,10 @@ public class Hotel {
         }
     }
 
+    public void removeBooking(ConferenceBooking booking) {
+        bookings.remove(booking);
+    }
+
     public AddonPurchase createAddonPurchase(String name, int price) {
         AddonPurchase addonPurchase = new AddonPurchase(name, price, this);
         this.addonsOnOffer.add(addonPurchase);
@@ -53,11 +57,12 @@ public class Hotel {
     }
 
     public boolean addonBooked(AddonPurchase addon) {
-        boolean booked = false;
         for (ConferenceBooking booking : bookings) {
-            booked = booking.getAddonsOrdered().contains(addon);
+            if (booking.getAddonsOrdered().contains(addon)) {
+                return true;
+            }
         }
-        return booked;
+        return false;
     }
 
     public ArrayList<String> getGuestBook() {

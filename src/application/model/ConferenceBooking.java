@@ -66,6 +66,9 @@ public class ConferenceBooking {
 
 
     public void setExcursionsOrdered(ArrayList<Excursion> excursionsOrdered) {
+        if (companion == null) {
+            return;
+        }
         this.excursionsOrdered.addAll(excursionsOrdered);
         if (this.excursionsOrdered.size() > 0) {
             for (Excursion excursion : excursionsOrdered) {
@@ -170,9 +173,13 @@ public class ConferenceBooking {
     }
 
     public void addAddon(AddonPurchase addon) {
-        if (!addonsOrdered.contains(addon) && hotel.getAddonsOnOffer().contains(addon)) {
+        if (hotel != null && !addonsOrdered.contains(addon) && hotel.getAddonsOnOffer().contains(addon)) {
             addonsOrdered.add(addon);
         }
+    }
+
+    public Hotel getHotel() {
+        return hotel;
     }
 
     public void setHotel(Hotel hotel, RoomType roomType) {
